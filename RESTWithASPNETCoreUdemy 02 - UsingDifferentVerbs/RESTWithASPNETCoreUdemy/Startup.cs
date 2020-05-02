@@ -13,7 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RESTWithASPNETCoreUdemy.Models.Context;
 using RESTWithASPNETCoreUdemy.Services;
-using RESTWithASPNETCoreUdemy.Services.Implementations;
+using RESTWithASPNETCoreUdemy.Services.Business;
+using RESTWithASPNETCoreUdemy.Services.Repository;
 
 namespace RESTWithASPNETCoreUdemy
 {
@@ -35,7 +36,8 @@ namespace RESTWithASPNETCoreUdemy
 
             services.AddApiVersioning();
             //Dependency Injection
-            services.AddScoped<IPersonService,PersonServiceImpl>();
+            services.AddScoped<IPersonBusiness,PersonBusinessImpl>();
+            services.AddScoped<IPersonRepository, PersonRepositoryImpl>();
         } 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
