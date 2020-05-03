@@ -11,9 +11,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RESTWithASPNETCoreUdemy.Hypermedia;
 using RESTWithASPNETCoreUdemy.Models.Context;
 using RESTWithASPNETCoreUdemy.Repository.Generic;
 using RESTWithASPNETCoreUdemy.Services.Business;
+using Tapioca.HATEOAS;
+
 namespace RESTWithASPNETCoreUdemy
 {
     public class Startup
@@ -60,6 +63,11 @@ namespace RESTWithASPNETCoreUdemy
             services.AddControllers();
 
             services.AddApiVersioning();
+
+            var filterOptions = new HyperMediaFilterOptions();
+            filterOptions.ObjectContentResponseEnricherList.Add(new PersonEnricher());
+            services.AddSingleton(filterOptions);
+            
             //Dependency Injection
             services.AddScoped<IPersonBusiness,PersonBusinessImpl>();
             services.AddScoped<IBookBusiness, BookBusinessImpl>();
@@ -85,6 +93,7 @@ namespace RESTWithASPNETCoreUdemy
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllerRoute("DefaultApi", "{controller=Values}/{id?}");
             });
         }
     }

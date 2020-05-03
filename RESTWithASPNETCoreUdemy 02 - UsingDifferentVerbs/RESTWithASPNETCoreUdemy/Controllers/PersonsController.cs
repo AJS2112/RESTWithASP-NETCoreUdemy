@@ -8,6 +8,7 @@ using RESTWithASPNETCoreUdemy.Data.VO;
 using RESTWithASPNETCoreUdemy.Models;
 using RESTWithASPNETCoreUdemy.Services;
 using RESTWithASPNETCoreUdemy.Services.Business;
+using Tapioca.HATEOAS;
 
 namespace RESTWithASPNETCoreUdemy.Controllers
 {
@@ -27,11 +28,14 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_personBusiness.FindAll());
         }
         [HttpGet("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
+
         public IActionResult Get(long id)
         {
             var person = _personBusiness.FindById(id);
@@ -40,6 +44,8 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         }
 
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
+
         public IActionResult Post([FromBody] PersonVO person)
         {
             if (person == null) return BadRequest();
@@ -47,6 +53,8 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         }
 
         [HttpPut]
+        [TypeFilter(typeof(HyperMediaFilter))]
+
         public IActionResult Put([FromBody] PersonVO person)
         {
             if (person == null) return BadRequest();
@@ -57,6 +65,8 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         }
 
         [HttpDelete("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
+
         public IActionResult Delete(long id)
         {
             _personBusiness.Delete(id);
