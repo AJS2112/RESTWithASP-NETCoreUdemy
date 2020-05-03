@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RESTWithASPNETCoreUdemy.Data.VO;
 using RESTWithASPNETCoreUdemy.Models;
 using RESTWithASPNETCoreUdemy.Services.Business;
 
@@ -37,17 +38,17 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Book person)
+        public IActionResult Post([FromBody] BookVO book)
         {
-            if (person == null) return BadRequest();
-            return new ObjectResult(_bookBusiness.Create(person));
+            if (book== null) return BadRequest();
+            return new ObjectResult(_bookBusiness.Create(book));
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Book person)
+        public IActionResult Put([FromBody] BookVO book)
         {
-            if (person == null) return BadRequest();
-            var updatedPerson = _bookBusiness.Update(person);
+            if (book== null) return BadRequest();
+            var updatedPerson = _bookBusiness.Update(book);
             if (updatedPerson == null) return NoContent();
             return new ObjectResult(updatedPerson);
 

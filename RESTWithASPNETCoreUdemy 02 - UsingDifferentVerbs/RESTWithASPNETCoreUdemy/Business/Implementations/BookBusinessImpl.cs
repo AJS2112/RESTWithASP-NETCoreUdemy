@@ -1,4 +1,6 @@
-﻿using RESTWithASPNETCoreUdemy.Models;
+﻿using RESTWithASPNETCoreUdemy.Data.Converters;
+using RESTWithASPNETCoreUdemy.Data.VO;
+using RESTWithASPNETCoreUdemy.Models;
 using RESTWithASPNETCoreUdemy.Models.Context;
 using RESTWithASPNETCoreUdemy.Repository.Generic;
 using System;
@@ -11,14 +13,18 @@ namespace RESTWithASPNETCoreUdemy.Services.Business
     public class BookBusinessImpl : IBookBusiness
     {
         private IRepository<Book> _repository;
+        private readonly BookConverter _converter;
         public BookBusinessImpl(IRepository<Book> repository)
         {
             _repository = repository;
+            _converter = new BookConverter();
         }
 
-        public Book Create(Book book)
+        public BookVO Create(BookVO book)
         {
-            return _repository.Create(book);
+            var bookEntity = _repository.Create(_converter.Parse(book));
+            return _converter.Parse(bookEntity);
+
         }
 
         public void Delete(long id)
@@ -26,19 +32,20 @@ namespace RESTWithASPNETCoreUdemy.Services.Business
             _repository.Delete(id);
         }
 
-        public List<Book> FindAll()
+        public List<BookVO> FindAll()
         {
-            return _repository.FindAll();
+            return _converter.ParseList(_repository.FindAll());
         }
 
-        public Book FindById(long id)
+        public BookVO FindById(long id)
         {
-            return _repository.FindById(id);
+            return _converter.Parse(_repository.FindById(id));
         }
 
-        public Book Update(Book book)
+        public BookVO Update(BookVO book)
         {
-            return _repository.Update(book);
+            var bookEntity = _repository.Update(_converter.Parse(book));
+            return _converter.Parse(bookEntity);
         }
 
     }

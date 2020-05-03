@@ -1,4 +1,5 @@
-﻿using RESTWithASPNETCoreUdemy.Models;
+﻿using RESTWithASPNETCoreUdemy.Data.VO;
+using RESTWithASPNETCoreUdemy.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,10 @@ namespace RESTWithASPNETCoreUdemy.Services.Business
 {
     public interface IPersonBusiness
     {
-        Person Create(Person person);
-        Person FindById(long id);
-        List<Person> FindAll();
-        Person Update(Person person);
+        PersonVO Create(PersonVO personVO);
+        PersonVO FindById(long id);
+        List<PersonVO> FindAll();
+        PersonVO Update(PersonVO personVO);
         void Delete(long id);
 
     }
