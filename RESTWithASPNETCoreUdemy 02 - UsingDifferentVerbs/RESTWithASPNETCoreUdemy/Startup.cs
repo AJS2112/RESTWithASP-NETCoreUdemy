@@ -6,15 +6,18 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using RESTWithASPNETCoreUdemy.Hypermedia;
 using RESTWithASPNETCoreUdemy.Models.Context;
 using RESTWithASPNETCoreUdemy.Repository.Generic;
 using RESTWithASPNETCoreUdemy.Services.Business;
+using Swashbuckle.AspNetCore.Swagger;
 using Tapioca.HATEOAS;
 
 namespace RESTWithASPNETCoreUdemy
@@ -64,6 +67,10 @@ namespace RESTWithASPNETCoreUdemy
 
             services.AddApiVersioning();
 
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RESTFul API with ASP.NET Core", Version = "v1" });
+            });
+
             var filterOptions = new HyperMediaFilterOptions();
             filterOptions.ObjectContentResponseEnricherList.Add(new PersonEnricher());
             services.AddSingleton(filterOptions);
@@ -95,6 +102,18 @@ namespace RESTWithASPNETCoreUdemy
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute("DefaultApi", "{controller=Values}/{id?}");
             });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c=>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json ", "My API V1");
+            });
+
+            var option = new RewriteOptions();
+
+            option.AddRedirect("^$", "swagger");
+            app.UseRewriter(option);
         }
     }
 }

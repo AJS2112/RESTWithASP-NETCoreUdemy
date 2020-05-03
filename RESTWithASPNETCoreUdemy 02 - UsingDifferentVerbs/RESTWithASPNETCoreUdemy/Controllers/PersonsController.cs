@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RESTWithASPNETCoreUdemy.Data.VO;
@@ -27,13 +28,25 @@ namespace RESTWithASPNETCoreUdemy.Controllers
              _logger = logger;
         }
 
+
+        /// <response code="200">Returns the newly created item</response>
         [HttpGet]
+        [ProducesResponseType( typeof(List<PersonVO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_personBusiness.FindAll());
         }
+
+
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PersonVO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public IActionResult Get(long id)
@@ -44,6 +57,9 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(PersonVO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public IActionResult Post([FromBody] PersonVO person)
@@ -53,6 +69,9 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(PersonVO), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public IActionResult Put([FromBody] PersonVO person)
@@ -65,6 +84,9 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public IActionResult Delete(long id)
