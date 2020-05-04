@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,10 +14,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using RESTWithASPNETCoreUdemy.Hypermedia;
 using RESTWithASPNETCoreUdemy.Models.Context;
+using RESTWithASPNETCoreUdemy.Repository;
 using RESTWithASPNETCoreUdemy.Repository.Generic;
+using RESTWithASPNETCoreUdemy.Repository.Implementations;
+using RESTWithASPNETCoreUdemy.Security.Configuration;
 using RESTWithASPNETCoreUdemy.Services.Business;
 using Swashbuckle.AspNetCore.Swagger;
 using Tapioca.HATEOAS;
@@ -40,6 +46,44 @@ namespace RESTWithASPNETCoreUdemy
         {
             var connectionString = _configuration["MySqlConnection:MySqlConnectionString"];
             services.AddDbContext<MySQLContext>(options => options.UseMySql(connectionString));
+
+            //Login 
+            var signingConfigurations = new SigningConfiguration();
+            services.AddSingleton(signingConfigurations);
+
+            var tokenConfiguration = new TokenConfiguration();
+
+            new ConfigureFromConfigurationOptions<TokenConfiguration>(
+                _configuration.GetSection("TokenConfigurtion")
+                ).Configure(tokenConfiguration);
+
+            services.AddSingleton(tokenConfiguration);
+
+            services.AddAuthentication(authOptions =>
+            {
+                authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(bearerOptions =>
+            {
+                var paramsValidation = bearerOptions.TokenValidationParameters;
+                paramsValidation.IssuerSigningKey = signingConfigurations.Key;
+                paramsValidation.ValidAudience = tokenConfiguration.Aundience;
+                paramsValidation.ValidIssuer = tokenConfiguration.Issuer;
+
+                paramsValidation.ValidateIssuerSigningKey = true;
+
+                paramsValidation.ValidateLifetime = true;
+
+                paramsValidation.ClockSkew = TimeSpan.Zero;
+
+            });
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser().Build());
+            });
             
             if (!_environment.IsDevelopment())
             {
@@ -78,8 +122,10 @@ namespace RESTWithASPNETCoreUdemy
             //Dependency Injection
             services.AddScoped<IPersonBusiness,PersonBusinessImpl>();
             services.AddScoped<IBookBusiness, BookBusinessImpl>();
+            services.AddScoped<ILoginBusiness, LoginBusinessImpl>();
 
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUserRepository, UserRepositoryImpl>();
 
         }
 

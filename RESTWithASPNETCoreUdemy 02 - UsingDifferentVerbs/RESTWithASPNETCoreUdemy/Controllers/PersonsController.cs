@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -35,6 +36,7 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
@@ -47,6 +49,7 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public IActionResult Get(long id)
@@ -60,6 +63,7 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         [ProducesResponseType(typeof(PersonVO), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public IActionResult Post([FromBody] PersonVO person)
@@ -72,6 +76,7 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         [ProducesResponseType(typeof(PersonVO), StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public IActionResult Put([FromBody] PersonVO person)
@@ -87,6 +92,7 @@ namespace RESTWithASPNETCoreUdemy.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public IActionResult Delete(long id)
